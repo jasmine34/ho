@@ -1,0 +1,63 @@
+<?php
+/**
+ * @Author: BUG7SEC TEAM
+ * @Date:   2016-11-17 15:02:37
+ * @Last Modified by:   SHOR7CUT
+ * @Last Modified time: 2016-11-17 15:27:48
+ */
+//error_reporting(0);
+class Filter
+{  
+    public function load($file){
+        if(! file_exists($file) ){
+            exit();
+        }else{
+            return file_get_contents($file);
+        }
+    }
+    public function ngesave($data,$name){
+        $file = fopen($name, "a+");
+        fwrite($file, $data);
+        fclose($file);
+    }
+    public function readline($pesan){
+            echo "[Filter] ".$pesan;
+            $answer =  rtrim( fgets( STDIN ));
+            return $answer;
+    }
+    public function run(){
+        $file       = $this->readline("Masukan Nama File : ");
+        $file       = $this->load($file);
+        echo "[Filter] 1. New Line (Windows) | 2. New Line (Linux)\r\n";
+        $delim = $this->readline("Pilih Delimiter (1-2): ");
+        switch ($delim) {
+            case '1':
+                $delim = "\r\n";
+            break;
+            case '2':
+                $delim = "\n";
+            break;
+            case '3':
+                $delim = ",";
+            break;
+            case '4':
+                $delim = "|";
+            break;
+           
+            default:
+                exit();
+            break;
+        }
+        $delimnew   = $this->readline("Masukan Delimiter Baru : ");
+        $name       = $this->readline("Output name and extension: ");
+        /****************************************/
+        $explode = explode($delim, $file);
+        foreach ($explode as $key => $value) {
+            $value = str_replace(" ", "", trim($value));
+            echo "[+] ".$key."|".$value."\r\n";
+            $this->ngesave($value.$delimnew,$name);
+        }
+    }
+}
+$runs = new Filter;
+$runs->run();
